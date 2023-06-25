@@ -28,4 +28,27 @@ A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ
 };
 
 enum { FALSE, TRUE };
+
+typedef struct {
+    int pieces[BRD_SQ_NUM]; // declare array of 120 integers
+    // 64 bits representing 8x8 board, 0 if no pawn, 1 if pawn, 3 values for each color (white, black, both)
+    U64 pawns[3];
+
+    int KingSq[2];  // store position of kings
+
+    int side;    // whose side it is
+    int enPas;     // en passant square, if there is one
+    int fiftyMove; // counter for fifty-move draw
+
+    
+    int ply;
+    int hisPly;
+
+    U64 posKey; // unique key generated for each position
+
+    int pceNum[13]; // array for number of each pieces
+    int big[3]; // store, by color, the number of non-pawn pieces
+    int majPce[3]; // number of rooks/queens
+    int minPce[3]; // number of bishops/knights
+} S_BOARD;
 #endif
