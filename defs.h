@@ -44,7 +44,7 @@ A4 = 51, B4, C4, D4, E4, F4, G4, H4,
 A5 = 61, B5, C5, D5, E5, F5, G5, H5, 
 A6 = 71, B6, C6, D6, E6, F6, G6, H6, 
 A7 = 81, B7, C7, D7, E7, F7, G7, H7, 
-A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ
+A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ, OFFBOARD
 };
 
 enum { FALSE, TRUE };
@@ -78,7 +78,7 @@ typedef struct {
     U64 posKey; // unique key generated for each position
 
     int pceNum[13]; // array for number of each pieces
-    int big[3]; // store, by color, the number of non-pawn pieces
+    int bigPce[3]; // store, by color, the number of non-pawn pieces
     int majPce[3]; // number of rooks/queens
     int minPce[3]; // number of bishops/knights
 
@@ -90,7 +90,8 @@ typedef struct {
 
 /* MACROS */
 #define FR2SQ(f, r) ( (21 + (f) ) + ( r * 10 ) ) // macro to convert from rank and file to 120 board sq number
-#define SQ64(sq120) Sq120ToSq64[sq120] // just shorten name for 120 to 64 matrix
+#define SQ64(sq120) (Sq120ToSq64[(sq120)]) // just shorten name for 120 to 64 matrix
+#define SQ120(sq64) (Sq64ToSq120[(sq64)]) // just shorten name for 64 to 120 matrix
 #define POP(b) popBit(b) // shorten name for pop function
 #define CNT(b) countBits(b) // shorten name for count function
 #define CLRBIT(bb, sq) ((bb) &= ClearMask[(sq)])
@@ -110,7 +111,16 @@ extern U64 CastleKeys[16];
 
 
 /* FUNCTIONS */ 
+// init.c
 extern void AllInit(); // initializes sq-conversion arrays
+
+// bitboards.c
 extern void PrintBitBoard(U64 bitBoard);
 extern int popBit(U64 *bitBoard);
 extern int countBits(U64 bitBoard);
+
+// hashkeys.c
+extern U64 GeneratePosKey(const S_BOARD *pos);
+
+// board.c
+extern void ResetBoard(S_BOARD *pos);   

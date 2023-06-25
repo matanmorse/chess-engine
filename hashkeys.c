@@ -28,6 +28,6 @@ U64 GeneratePosKey(const S_BOARD *pos) {
 
         ASSERT( pos -> castlePerm >= 0 && pos -> castlePerm <= 15 ); // double check castling permission values
 
-        finalKey ^= CastleKeys[pos -> castlePerm];
+        finalKey ^= CastleKeys[pos -> castlePerm]; // hash in castling permissions
     }
 }
