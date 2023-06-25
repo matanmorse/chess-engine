@@ -93,10 +93,16 @@ typedef struct {
 #define SQ64(sq120) Sq120ToSq64[sq120] // just shorten name for 120 to 64 matrix
 #define POP(b) popBit(b) // shorten name for pop function
 #define CNT(b) countBits(b) // shorten name for count function
+#define CLRBIT(bb, sq) ((bb) &= ClearMask[(sq)])
+#define SETBIT(bb, sq) ((bb) |= SetMask[(sq)])
+
+
 
 /* GLOBALS */
 extern int Sq120ToSq64[BRD_SQ_NUM]; // array which converts 120 square board numbers to 64 board numbers
 extern int Sq64ToSq120[64]; // array which converts 64 sq board numbers to 64 sq board numbers
+extern U64 SetMask[64];
+extern U64 ClearMask[64];
 
 /* FUNCTIONS */ 
 extern void AllInit(); // initializes sq-conversion arrays
