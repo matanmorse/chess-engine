@@ -26,6 +26,8 @@ typedef unsigned long long U64;
 
 #define MAXGAMEMOVES 2048
 
+#define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
 // enumerate pieces including no piece
 enum { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK };
 

@@ -3,6 +3,77 @@
 #include "stdio.h"
 #include "defs.h"
 
+int ParseFen( char *fen, S_BOARD *pos) {
+    ASSERT( fen != NULL );
+    ASSERT( pos != NULL ); // make sure neither given pointers are null
+
+    int rank = RANK_8; // because FEN notation starts from the back rank we start at rank 8
+    int file = FILE_A;
+    int piece = 0;
+    int count = 0; // count number of empty squares if they exist
+    int i = 0;
+    int sq64 = 0;
+    int sq120 = 0;
+
+    ResetBoard( pos );
+    
+    while ( ( rank >= RANK_1 ) && *fen ) { // *fen is a DEREFERENCE, so it's talking about the character currently being pointed to.
+        count = 1;
+        switch (*fen) // change from FEN notation to our piece enumeration
+        {   
+            case 'p': piece = bP; break;
+            case 'r': piece = bR; break;
+            case 'n': piece = bN; break;
+            case 'b': piece = bB; break;
+            case 'k': piece = bK; break;
+            case 'q': piece = bQ; break;
+            case 'P': piece = wP; break;
+            case 'R': piece = wR; break;
+            case 'N': piece = wN; break;
+            case 'B': piece = wB; break;
+            case 'K': piece = wK; break;
+            case 'Q': piece = wQ; break;
+
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+                piece = EMPTY;
+                count = *fen - '0'; // subtract correct ascii value to get integer value
+                break;
+
+            case '/':
+            case ' ': // if forward slash or space, move on to next rank
+                rank--;
+                file = FILE_A;
+                fen++; // use pointer arithmatic to move to next char
+                continue;
+            
+            default: 
+                printf("FEN error \n");
+                return -1;
+        }
+
+        // if count is greater than 1, i.e. the fen encountered a number, it will skip that many files, leaving them EMPTY
+        // if FEN found a piece, count will remain 1 as defined at the top of the loop and the current square based on rank and file will be set to it
+        // after each loop move on to next file, and after the pieces are set move on to the next letter
+        for ( i = 0; i < count; i++ ) {
+            sq64 = rank * 8 + file;
+            sq120 = SQ120(sq64);
+            if ( piece != EMPTY ) {
+                pos -> pieces[sq120] = piece;
+            }
+            file++;
+        }
+        fen++;
+    }
+}
+
+
 void ResetBoard( S_BOARD *pos ) {
     int index = 0;
     // first, set all squares on the board to offboard.
