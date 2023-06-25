@@ -6,6 +6,8 @@ typedef unsigned long long U64;
 #define NAME "Engine 1.0"
 #define BRD_SQ_NUM 120
 
+#define MAXGAMEMOVES 2048
+
 // enumerate pieces including no piece
 enum { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK };
 
@@ -29,6 +31,18 @@ A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ
 
 enum { FALSE, TRUE };
 
+// castling permission for both sides
+// convert to 4 bit number showing castling permission
+enum { WKCA = 1, WQKA = 2, BKCA = 4, BCKA = 8 }; 
+
+typedef struct {
+    int move; // current move
+    int castlePerm; // castling permission before move was played
+    int enPas;
+    int fiftyMove;
+    U64 posKey; // unique position key
+} S_UNDO;
+
 typedef struct {
     int pieces[BRD_SQ_NUM]; // declare array of 120 integers
     // 64 bits representing 8x8 board, 0 if no pawn, 1 if pawn, 3 values for each color (white, black, both)
@@ -40,7 +54,7 @@ typedef struct {
     int enPas;     // en passant square, if there is one
     int fiftyMove; // counter for fifty-move draw
 
-    
+    int castlePerm; // four bit number representing castling permission in a situation (e.g. 1 0 0 1)
     int ply;
     int hisPly;
 
@@ -50,5 +64,7 @@ typedef struct {
     int big[3]; // store, by color, the number of non-pawn pieces
     int majPce[3]; // number of rooks/queens
     int minPce[3]; // number of bishops/knights
+
+    S_UNDO history[MAXGAMEMOVES]; // array storing board state histories back to the start of the game indexed by move number
 } S_BOARD;
 #endif
