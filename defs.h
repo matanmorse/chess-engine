@@ -68,3 +68,13 @@ typedef struct {
     S_UNDO history[MAXGAMEMOVES]; // array storing board state histories back to the start of the game indexed by move number
 } S_BOARD;
 #endif
+
+/* MACROS */
+#define FR2SQ(f, r) ( (21 + (f) ) + ( r * 10 ) ) // macro to convert from rank and file to 120 board sq number
+
+/* GLOBALS */
+extern int Sq120ToSq64[BRD_SQ_NUM]; // array which converts 120 square board numbers to 64 board numbers
+extern int Sq64ToSq120[64]; // array which converts 64 sq board numbers to 64 sq board numbers
+
+/* FUNCTIONS */ 
+extern void AllInit(); // initializes sq-conversion arrays
