@@ -6,7 +6,6 @@
 // generates random 64 bit number
 // because (rand) generates a 15 bit number we continually generate those 15 bit values and shift them 
 // essentially filling up 64 bits with random numbers
-
 #define RAND_64 ( (U64) rand() + \
                   (U64) rand() << 15 + \
                   (U64) rand() << 30 + \
@@ -18,18 +17,11 @@ int Sq64ToSq120[64]; // array which converts 64 sq board numbers to 64 sq board 
 U64 ClearMask[64];
 U64 SetMask[64];
 
-#define RAND_64 ( (U64) rand() + \
-                  (U64) rand() << 15 + \
-                  (U64) rand() << 30 + \
-                  (U64) rand() << 45 + \
-                  ((U64) rand() & 0xf) << 60 )
-
 U64 PieceKeys[13][120];
 U64 SideKey;
 U64 CastleKeys[16];
 
 void InitHashKeys() {
-    // printf("%X", RAND_64);
     int index = 0;
     int index2 = 0;
     for ( index = 0; index < 13; index++ ) {
