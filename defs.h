@@ -91,6 +91,8 @@ typedef struct {
 /* MACROS */
 #define FR2SQ(f, r) ( (21 + (f) ) + ( r * 10 ) ) // macro to convert from rank and file to 120 board sq number
 #define SQ64(sq120) Sq120ToSq64[sq120] // just shorten name for 120 to 64 matrix
+#define POP(b) popBit(b) // shorten name for pop function
+#define CNT(b) countBits(b) // shorten name for count function
 
 /* GLOBALS */
 extern int Sq120ToSq64[BRD_SQ_NUM]; // array which converts 120 square board numbers to 64 board numbers
@@ -99,3 +101,5 @@ extern int Sq64ToSq120[64]; // array which converts 64 sq board numbers to 64 sq
 /* FUNCTIONS */ 
 extern void AllInit(); // initializes sq-conversion arrays
 extern void PrintBitBoard(U64 bitBoard);
+extern int popBit(U64 *bitBoard);
+extern int countBits(U64 bitBoard);
