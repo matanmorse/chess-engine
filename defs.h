@@ -1,6 +1,24 @@
 #ifndef DEFS_H
 #define defs_h
 
+#include "stdlib.h"
+
+#define DEBUG
+
+#ifndef DEBUG
+#define ASSERT(n)
+#else
+// can use this to assert if a value is true, if it's false it will end the program and spit out diagnostics
+#define ASSERT(n) \
+if (!(n)) { \
+    printf("%s - Failed ", #n); \
+     printf("On %s ", __DATE__); \
+    printf("At %s ", __TIME__); \
+    printf("In File %s ", __FILE__); \
+    printf("At line %d", __LINE__); \
+    exit(1);};
+#endif
+
 typedef unsigned long long U64;
 
 #define NAME "Engine 1.0"
@@ -66,6 +84,8 @@ typedef struct {
     int minPce[3]; // number of bishops/knights
 
     S_UNDO history[MAXGAMEMOVES]; // array storing board state histories back to the start of the game indexed by move number
+
+    int pList[13][10]; // piece list
 } S_BOARD;
 #endif
 
