@@ -1,10 +1,26 @@
 // init.c
 
 #include "defs.h"
+#include "stdlib.h"
+
+// generates random 64 bit number
+// because (rand) generates a 15 bit number we continually generate those 15 bit values and shift them 
+// essentially filling up 64 bits with random numbers
+
+#define RAND_64 ( (U64) rand() + \
+                  (U64) rand() << 15 + \
+                  (U64) rand() << 30 + \
+                  (U64) rand() << 45 + \
+                  ((U64) rand() & 0xf) << 60 )
+                  
 int Sq120ToSq64[BRD_SQ_NUM]; // array which converts 120 square board numbers to 64 board numbers
 int Sq64ToSq120[64]; // array which converts 64 sq board numbers to 64 sq board numbers
 U64 ClearMask[64];
 U64 SetMask[64];
+
+U64 PieceKeys[13][120];
+U64 SideKey;
+U64 CastleKeys[16];
 
 // initialize masks used to set and clear bits
 void InitBitMasks() {

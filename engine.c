@@ -6,5 +6,6 @@ int main (void) {
     // empty bit board
     U64 playBitBoard = 0ULL;
     
+    ASSERT(0 == 1);
     return 0;
 }
