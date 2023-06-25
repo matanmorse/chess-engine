@@ -71,6 +71,45 @@ int ParseFen( char *fen, S_BOARD *pos) {
         }
         fen++;
     }
+    // in FEN notation there will be 7 slashes before a space, representing each rank, so when the loop encounters the space RANK will already be equal to 1.
+    // so when the loop encounters the space it will be rank 0 and break out of the loop
+
+    ASSERT(*fen == 'w' || *fen == 'b'); // double check FEN is at the right part of the string
+    pos -> side = (*fen == 'w') ? WHITE : BLACK;
+    fen += 2;
+    for ( i = 0; i < 4; i++ ) {
+        if ( *fen == ' ') { // if we encounter a space we are at the end of the castling characters
+            break;
+        }
+        switch ( *fen ) {   // use bitwise or to add the castling permissions based on the string
+            case 'K': pos -> castlePerm |= WKCA;
+            case 'Q': pos -> castlePerm |= WQCA;
+            case 'k': pos -> castlePerm |= BKCA;
+            case 'q': pos -> castlePerm |= BQCA;
+            default: break;
+        }
+
+        fen++;
+    }
+    fen++; // move on to en passant square
+
+    ASSERT( pos -> castlePerm >=0 && pos -> castlePerm <= 15 ); // verify value of castlePerm
+
+    if ( *fen != '-' ) { // if not dash, there is an en passant square
+        // we assume here the next two letters in the string are the file and rank of the en passant square, so we use some funny ascii math 
+        // to get the integer values of the rank and file and use that to compute the number of the EP square on the 120 board index     
+        file = fen[0] - 'a'; 
+        rank = fen[1] - '1';
+
+        ASSERT( file >= FILE_A && file <= FILE_H ); // double check en passant square is actually on the board
+        ASSERT( rank >= RANK_1 && file <= RANK_8 );
+
+        pos -> enPas = FR2SQ(file, rank);
+    }
+
+    pos -> posKey = GeneratePosKey(pos); // call the function and pray to god it works
+
+    return 0;
 }
 
 

@@ -53,7 +53,7 @@ enum { FALSE, TRUE };
 
 // castling permission for both sides
 // convert to 4 bit number showing castling permission
-enum { WKCA = 1, WQKA = 2, BKCA = 4, BCKA = 8 }; 
+enum { WKCA = 1, WQCA = 2, BKCA = 4, BQCA = 8 }; 
 
 typedef struct {
     int move; // current move
