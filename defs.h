@@ -63,8 +63,7 @@ typedef struct {
 
 typedef struct {
     int pieces[BRD_SQ_NUM]; // declare array of 120 integers
-    // 64 bits representing 8x8 board, 0 if no pawn, 1 if pawn, 3 values for each color (white, black, both)
-    U64 pawns[3];
+    U64 pawns[3]; // 64 bits representing 8x8 board, 0 if no pawn, 1 if pawn, 3 values for each color (white, black, both)
 
     int KingSq[2];  // store position of kings
 
@@ -91,6 +90,7 @@ typedef struct {
 
 /* MACROS */
 #define FR2SQ(f, r) ( (21 + (f) ) + ( r * 10 ) ) // macro to convert from rank and file to 120 board sq number
+#define SQ64(sq120) Sq120ToSq64[sq120] // just shorten name for 120 to 64 matrix
 
 /* GLOBALS */
 extern int Sq120ToSq64[BRD_SQ_NUM]; // array which converts 120 square board numbers to 64 board numbers
@@ -98,3 +98,4 @@ extern int Sq64ToSq120[64]; // array which converts 64 sq board numbers to 64 sq
 
 /* FUNCTIONS */ 
 extern void AllInit(); // initializes sq-conversion arrays
+extern void PrintBitBoard(U64 bitBoard);

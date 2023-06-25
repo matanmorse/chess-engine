@@ -3,9 +3,12 @@
 
 int main (void) {
     AllInit();
-    int num = 2;
-    int nuts = 4;
-    ASSERT(num==3);
+    // empty bit board
+    U64 playBitBoard = 0ULL;
 
-    return 1;
+    printf("Start \n");
+    PrintBitBoard(playBitBoard);
+
+
+    return 0;
 }
