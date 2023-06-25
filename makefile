@@ -1,2 +1,2 @@
-all: 
+all:
 	gcc engine.c -o engine
