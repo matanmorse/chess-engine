@@ -80,10 +80,11 @@ typedef struct {
 
     U64 posKey; // unique key generated for each position
 
-    int pceNum[13]; // array for number of each pieces
-    int bigPce[3]; // store, by color, the number of non-pawn pieces
-    int majPce[3]; // number of rooks/queens
-    int minPce[3]; // number of bishops/knights
+    int pceNum[13]; // array for how many of each piece
+    int bigPce[2]; // store, by color, the number of non-pawn pieces
+    int majPce[2]; // number of rooks/queens
+    int minPce[2]; // number of bishops/knights
+    int material[2]; // total material value of pieces
 
     S_UNDO history[MAXGAMEMOVES]; // array storing board state histories back to the start of the game indexed by move number
 
@@ -110,11 +111,17 @@ extern U64 ClearMask[64];
 extern U64 PieceKeys[13][120];
 extern U64 SideKey;
 extern U64 CastleKeys[16];
+
 extern char PceChar[];
 extern char SideChar[];
 extern char RankChar[];
 extern char FileChar[];
 
+extern int PieceBig[13];
+extern int PieceMaj[13];
+extern int PieceMin[13];
+extern int PieceVal[13];
+extern int PieceCol[13];
 
 /* FUNCTIONS */ 
 // init.c
@@ -132,3 +139,4 @@ extern U64 GeneratePosKey(const S_BOARD *pos);
 extern void ResetBoard(S_BOARD *pos);   
 extern int PrintBoard( S_BOARD *pos );
 extern int ParseFen(char *fen, S_BOARD *pos);
+extern void UpdateListsMaterial( S_BOARD *pos );

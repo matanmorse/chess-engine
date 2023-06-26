@@ -33,5 +33,6 @@ int main (void) {
     printf("Starting Position: \n");
     PrintBoard(&playBoard);
 
+    ASSERT(1 == 0);
     return 0;
 }

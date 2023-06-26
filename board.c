@@ -3,7 +3,35 @@
 #include "stdio.h"
 #include "defs.h"
 
+void UpdateListsMaterial( S_BOARD *pos ) {
+    int piece, sq, index, color;
 
+    for ( index = 0; index < BRD_SQ_NUM; index++ ) {
+        sq = index;
+        piece = pos -> pieces[sq];
+
+        // if the piece exists, update the piece lists based on what kind of piece it is
+        // using the arrays defined in data.c which are indexed by piece number
+        if ( piece != OFFBOARD && piece != EMPTY ) {
+            color = PieceCol[piece];
+
+            if ( PieceBig[piece] == TRUE ) pos -> bigPce[color]++;
+            if ( PieceMaj[piece] == TRUE ) pos -> majPce[color]++;
+            if ( PieceMin[piece] == TRUE ) pos -> minPce[color]++;
+
+            pos -> material[color] += PieceVal[piece];
+            
+            // the pList array is a 2d array where the first array contains the type of piece
+            // and the second array is a list of the square where each piece of that type resides
+            // we index this list using the number of pieces, then increment it to move on to the next item in the array.
+            pos -> pList[piece][pos -> pceNum[piece]] = sq;
+            pos -> pceNum[piece]++;
+
+            if ( piece == wK ) pos -> KingSq[WHITE] = sq;
+            if ( piece == bK ) pos -> KingSq[BLACK] = sq;
+        }
+    }
+}
 
 int ParseFen( char *fen, S_BOARD *pos) {
     ASSERT( fen != NULL );
@@ -111,6 +139,8 @@ int ParseFen( char *fen, S_BOARD *pos) {
 
     pos -> posKey = GeneratePosKey(pos); // call the function and pray to god it works
 
+    // update material lists
+    UpdateListsMaterial(pos);
     return 0;
 }
 
