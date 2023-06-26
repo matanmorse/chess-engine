@@ -13,26 +13,28 @@ int main (void) {
     // empty playBoard
     S_BOARD playBoard;
 
-    ResetBoard(&playBoard);
-    ParseFen(START_FEN, &playBoard);
-    printf("Starting Position: \n");
-    PrintBoard(&playBoard);
+    // ResetBoard(&playBoard);
+    // ParseFen(START_FEN, &playBoard);
+    // printf("Starting Position: \n");
+    // PrintBoard(&playBoard);
 
-    ResetBoard(&playBoard);
-    ParseFen(FEN1, &playBoard);
-    printf("Fen 1: \n");
-    PrintBoard(&playBoard);
+    // ResetBoard(&playBoard);
+    // ParseFen(FEN1, &playBoard);
+    // printf("Fen 1: \n");
+    // PrintBoard(&playBoard);
 
-    ResetBoard(&playBoard);
-    ParseFen(FEN2, &playBoard);
-    printf("Starting Position: \n");
-    PrintBoard(&playBoard);
+    // ResetBoard(&playBoard);
+    // ParseFen(FEN2, &playBoard);
+    // printf("Starting Position: \n");
+    // PrintBoard(&playBoard);
 
-     ResetBoard(&playBoard);
-    ParseFen(FEN3, &playBoard);
-    printf("Starting Position: \n");
-    PrintBoard(&playBoard);
+    //  ResetBoard(&playBoard);
+    // ParseFen(FEN3, &playBoard);
+    // printf("Starting Position: \n");
+    // PrintBoard(&playBoard);
 
+    int rank, file, sq;
+   
     ASSERT(1 == 0);
     return 0;
 }

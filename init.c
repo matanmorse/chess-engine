@@ -22,6 +22,40 @@ U64 PieceKeys[13][120];
 U64 SideKey;
 U64 CastleKeys[16];
 
+int FilesBrd[BRD_SQ_NUM];
+int RanksBrd[BRD_SQ_NUM];
+
+void InitFilesRanksBrd() {
+    int index, rank, file, sq;
+    for ( index = 0; index < BRD_SQ_NUM; index++ ) {
+        RanksBrd[index] = OFFBOARD; // start by setting everything offboard so we can overwrite it later
+        FilesBrd[index] = OFFBOARD;
+    }
+    // loop over 64 squares and set them appropriately
+    for ( rank = RANK_1; rank <= RANK_8; rank++ ) {
+        for ( file = FILE_A; file <= FILE_H; file++ ) {
+            sq = FR2SQ(file, rank);
+            FilesBrd[sq] = file;
+            RanksBrd[sq] = rank;
+        }
+    }
+    // uncomment to view rank/file arrays
+    // for ( index = 0; index < BRD_SQ_NUM; index++ ) {
+    //     if (index % 10 == 0 && index != 0) printf("\n");
+    //     printf("%5d", RanksBrd[index]);
+    // }
+    // printf("\n");
+    // printf("\n");
+
+    //  for ( index = 0; index < BRD_SQ_NUM; index++ ) {
+    //     if (index % 10 == 0 && index != 0) printf("\n");
+    //     printf("%5d", FilesBrd[index]);
+    // }
+    // printf("\n");
+
+}
+
+
 void InitHashKeys() {
     // printf("Random 64-bit: %llu \n", RAND_64);
     int index = 0;
@@ -98,4 +132,5 @@ void AllInit() {
     InitBitMasks();
     InitSq120to64();
     InitHashKeys();
+    InitFilesRanksBrd();
 }
