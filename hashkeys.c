@@ -12,7 +12,7 @@ U64 GeneratePosKey(const S_BOARD *pos) {
         // get integer value of piece (including no piece and squares outside the board) from the board struct
         piece = pos -> pieces[sq];
         // if the piece is not empty or outside bounds
-        if ( piece != NO_SQ && piece != EMPTY ) {
+        if ( piece != NO_SQ && piece != EMPTY && piece != OFFBOARD ) {
             ASSERT( piece >= wP && piece <= bK); // double check integer value of piece is between 1-12
             finalKey ^= PieceKeys[piece][sq]; // hash the piece into the final key
         }
@@ -30,4 +30,5 @@ U64 GeneratePosKey(const S_BOARD *pos) {
 
         finalKey ^= CastleKeys[pos -> castlePerm]; // hash in castling permissions
     }
+    return finalKey;
 }
