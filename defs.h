@@ -143,3 +143,6 @@ extern void ResetBoard(S_BOARD *pos);
 extern int PrintBoard( S_BOARD *pos );
 extern int ParseFen(char *fen, S_BOARD *pos);
 extern void UpdateListsMaterial( S_BOARD *pos );
+
+// check.c
+extern void CheckBitBoard(S_BOARD *pos);

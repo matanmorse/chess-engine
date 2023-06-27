@@ -29,6 +29,15 @@ void UpdateListsMaterial( S_BOARD *pos ) {
 
             if ( piece == wK ) pos -> KingSq[WHITE] = sq;
             if ( piece == bK ) pos -> KingSq[BLACK] = sq;
+
+            // set bitboards for the pawn
+            if ( piece == wP ) {
+                SETBIT(pos -> pawns[color], SQ64(index));
+                SETBIT(pos -> pawns[BOTH], SQ64(index));
+            } else if ( piece == bP ) {
+                SETBIT(pos -> pawns[color], SQ64(index));
+                SETBIT(pos -> pawns[BOTH], SQ64(index));
+            }
         }
     }
 }
