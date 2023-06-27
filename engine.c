@@ -12,9 +12,9 @@ int main (void) {
 
     // empty playBoard
     S_BOARD playBoard[1];
-    ParseFen(FEN4, playBoard);
-    
-    CheckBitBoard(playBoard);
-    ASSERT(1 == 0);
+
+    ParseFen(FEN4, playBoard);    
+    ASSERT(CheckBoard(playBoard));
+
     return 0;
 }

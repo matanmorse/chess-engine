@@ -10,6 +10,7 @@ const int BitTable[64] = {
 
 // will remove a bit from the bitboard
 // idrk how this code works but yeah
+// returns in sq64 index position of popped pawn
 int popBit(U64 *bitBoard) {
     U64 b = *bitBoard ^ (*bitBoard - 1);
     unsigned int fold = (unsigned) ((b & 0xffffffff) ^ ( b >> 32 ));

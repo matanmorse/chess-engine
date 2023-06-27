@@ -3,6 +3,100 @@
 #include "stdio.h"
 #include "defs.h"
 
+
+int CheckBoard( const S_BOARD *pos ) {
+    // setup empty temporary arrays that will mirror data we're checking
+    int temp_pceNum[13] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    int temp_bigPce[2] = { 0, 0 };
+    int temp_majPce[2] = { 0, 0 };
+    int temp_minPce[2] = { 0, 0 };
+    int temp_material[2] = { 0, 0 };
+
+    int sq64, temp_piece, temp_pce_num, sq120, color, pcount;
+
+    // setup three empty bitboards in the temp pawns array
+    U64 temp_pawns[3]  = { 0ULL, 0ULL, 0ULL};
+    // copy p_bitboards from given pos to temp arrays
+    temp_pawns[WHITE] = pos -> pawns[WHITE];
+    temp_pawns[BLACK] = pos -> pawns[BLACK];
+    temp_pawns[BOTH] = pos -> pawns[BOTH];
+
+    // check piece lists
+    // loop over every piece on the board of each type and check if it's on the pieces array as it should be
+    for ( temp_piece = wP; temp_piece <= bK; temp_piece++ ) {
+        for ( temp_pce_num = 0; temp_pce_num < pos -> pceNum[temp_piece]; ++temp_pce_num ) {
+            sq120 = pos -> pList[temp_piece][temp_pce_num];
+            ASSERT( pos -> pieces[sq120] == temp_piece);
+        }
+    }
+
+    // check piece count and other counters
+    for ( sq64 = 0; sq64 < 64; sq64++ ) {
+        sq120 = SQ120(sq64);
+        temp_piece = pos -> pieces[sq120];
+        temp_pceNum[temp_piece]++;
+        color = PieceCol[temp_piece];
+        if ( PieceBig[temp_piece] == TRUE ) temp_bigPce[color]++;
+        if ( PieceMaj[temp_piece] == TRUE ) temp_majPce[color]++;
+        if ( PieceMin[temp_piece] == TRUE ) temp_minPce[color]++;
+
+        temp_material[color] += PieceVal[temp_piece];
+    }
+
+    // check piece counts have been counted correctly for each piece
+    for ( temp_piece = wP; temp_piece <= bK; temp_piece++ ) {
+        ASSERT( temp_pceNum[temp_piece] == pos -> pceNum[temp_piece]);
+    }
+
+    // check count of pawns on all bitboards
+    pcount = CNT(temp_pawns[WHITE]);
+    ASSERT(pcount == pos -> pceNum[wP])
+
+    pcount = CNT(temp_pawns[BLACK]);
+    ASSERT(pcount == pos -> pceNum[bP])
+
+    pcount = CNT(temp_pawns[BOTH]);
+    ASSERT(pcount == (pos -> pceNum[wP] + pos -> pceNum[bP]))
+
+    // check pawns on bitboards are on correct squares
+    while ( temp_pawns[WHITE] ) {
+        // get the index of the first found pawn
+        sq64 = POP(&temp_pawns[WHITE]);
+        sq120 = SQ120(sq64);
+        // check there is a pawn there on the pieces array
+        ASSERT( pos -> pieces[sq120] == wP );
+    }
+    while ( temp_pawns[BLACK] ) {
+        sq64 = POP(&temp_pawns[BLACK]);
+        sq120 = SQ120(sq64);
+        ASSERT( pos -> pieces[sq120] == bP );
+    }
+    while ( temp_pawns[BOTH] ) {
+        sq64 = POP(&temp_pawns[BOTH]);
+        sq120 = SQ120(sq64);
+        ASSERT( pos -> pieces[sq120] == wP || pos -> pieces[sq120] == bP );
+    }
+
+    // last-minute sanity checks
+    ASSERT( temp_material[WHITE] == pos -> material[WHITE] && temp_material[BLACK] == pos -> material[BLACK] );
+    ASSERT( temp_majPce[WHITE] == pos -> majPce[WHITE] && temp_majPce[BLACK] == pos -> majPce[BLACK] );
+    ASSERT( temp_minPce[WHITE] == pos -> minPce[WHITE] && temp_minPce[BLACK] == pos -> minPce[BLACK] );
+    ASSERT( temp_bigPce[WHITE] == pos -> bigPce[WHITE] && temp_bigPce[BLACK] == pos -> bigPce[BLACK] );
+
+    ASSERT ( pos -> side == WHITE || pos -> side == BLACK );
+    ASSERT ( GeneratePosKey(pos) == pos -> posKey);
+    // check that the en passant square is on the right rank
+    // black can only enpas on rank 6 and white only on rank 3
+    ASSERT ( pos -> enPas == NO_SQ || ( RanksBrd[pos -> enPas] == RANK_3 && pos -> side == BLACK) || (RanksBrd[pos -> enPas] == RANK_6 && pos -> side == WHITE));
+    // verify kings are on the pieces KingSq says they are
+
+    
+    ASSERT ( pos -> pieces[ pos -> KingSq[WHITE]] == wK);
+    ASSERT ( pos -> pieces[ pos -> KingSq[BLACK]] == bK);
+
+    return TRUE;
+}
+
 void UpdateListsMaterial( S_BOARD *pos ) {
     int piece, sq, index, color;
 
