@@ -101,7 +101,10 @@ typedef struct {
 #define CLRBIT(bb, sq) ((bb) &= ClearMask[(sq)])
 #define SETBIT(bb, sq) ((bb) |= SetMask[(sq)])
 
-
+#define IsBQ(p) (PieceBishopQueen[(p)]) // macro shortening PieceBishopQueen[] array
+#define IsRQ(p) (PieceRookQueen[(p)]) // macro shortening PieceRookQueen[] array
+#define IsKi(p) (PieceKing[(p)]) // macro shortening PieceKing[] array
+#define IsKn(p) (PieceKnight[(p)]) // macro shortening PieceKnight[] array
 
 /* GLOBALS */
 extern int Sq120ToSq64[BRD_SQ_NUM]; // array which converts 120 square board numbers to 64 board numbers
@@ -126,6 +129,11 @@ extern int PieceCol[13];
 extern int FilesBrd[BRD_SQ_NUM];
 extern int RanksBrd[BRD_SQ_NUM];
 
+extern int PieceKnight[13]; // is piece a knight
+extern int PieceKing[13]; // is piece a king
+extern int PieceRookQueen[13]; // is piece rook or queen
+extern int PieceBishopQueen[13]; // is piece bishop or queen
+
 /* FUNCTIONS */ 
 // init.c
 extern void AllInit(); // initializes sq-conversion arrays
@@ -147,3 +155,7 @@ extern int CheckBoard( const S_BOARD *pos );
 
 // check.c
 extern void CheckBitBoard(S_BOARD *pos);
+extern void ShowSqAttackedBySide(const int side, const S_BOARD *pos);
+
+// attack.c
+extern int SqAttacked (const int sq, const int side, const S_BOARD *pos);
