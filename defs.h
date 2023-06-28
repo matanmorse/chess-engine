@@ -99,16 +99,34 @@ typedef struct {
 #endif
 
 /* GAME MOVE */
+
 /* 
 32 Bits
-0000 0000 0000 0000 0000 0111 1111 --> From Square = 7 bits
-0000 0000 0000 0011 1111 1000 0000 --> To Square
-0000 0000 0011 1100 0000 0000 0000 --> Captured Piece
-0000 0000 0100 0000 0000 0000 0000 --> En Passant Capture?
-0000 0000 1000 0000 0000 0000 0000 --> En Passant Capture?
-0000 1111 0000 0000 0000 0000 0000 --> Promoted Piece
-1111 0000 0000 0000 0000 0000 0000 --> Castling?
+0000 0000 0000 0000 0000 0111 1111 --> From Square 0x3F
+0000 0000 0000 0011 1111 1000 0000 --> To >> 7, 0x3F
+0000 0000 0011 1100 0000 0000 0000 --> Captured Piece >> 14, 0xF
+0000 0000 0100 0000 0000 0000 0000 --> En Passant Capture? 0x40000 
+0000 0000 1000 0000 0000 0000 0000 --> Pawn Start? 0x80000
+0000 1111 0000 0000 0000 0000 0000 --> Promoted Piece >> 20, 0xF    
+0001 0000 0000 0000 0000 0000 0000 --> Castling >> 0x1000000
 */
+
+// appropriate shifting and bitwise operations to get from sq, to sq, captured+promoted piece from move int
+#define FROMSQ(m) ((m) & 0x7F)    
+#define TOSQ(m) ((m >> 7) & 0x7F)    
+#define CAPTURED(m) ((m >> 14) & 0xF)    
+#define PROMOTED(m) ((m >> 20) & 0xF)
+
+// bit locations of the En Passant, Pawn Start, and castling flags
+#define MFLAGEP 0x40000
+#define MFLAGPS 0x80000
+#define MFLAGCA 0x1000000
+
+// bit locations of captured/promotion booleans
+#define MFLAGCAP 0x7C000
+#define MFLAGPROM 0xF00000
+
+
 
 /* MACROS */
 #define FR2SQ(f, r) ( (21 + (f) ) + ( r * 10 ) ) // macro to convert from rank and file to 120 board sq number
