@@ -14,22 +14,16 @@ int main (void) {
     // empty playBoard
     S_BOARD board[1];
 
-    ParseFen(FEN4, board);    
-    PrintBoard(board);
-    ASSERT(CheckBoard(board));
-
     int move = 0; 
-    int from = 6;
-    int to = 12; 
+    int from = A2;
+    int to = H7; 
     int captured = wR;
-    int promoted = bR;
+    int promoted = bB;
 
-    move = ( from ) | ( to << 7  ) | ( captured << 14 ) | ( promoted << 20 ) ;
+    move = ( from ) | ( to << 7  ) | ( captured << 14 ) | ( promoted << 20 ) | MFLAGPS ;
 
-    printf("Decimal: %d Hex: %X\n", move, move);
-    PrintBin(move);
-
-    printf("From: %d To: %d Captured: %d Promoted: %d Is Pawn Start: %s",
-    FROMSQ(move), TOSQ(move), CAPTURED(move), PROMOTED(move), (move & MFLAGPS) ? "yes" : "no");
+    
+    printf("From: %s\n", PrSq(FROMSQ(move)));
+    printf("Algebraic: %s\n", PrMove(move));
     return 0;
 }
