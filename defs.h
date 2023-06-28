@@ -192,6 +192,7 @@ extern int CheckBoard( const S_BOARD *pos );
 // check.c
 extern void CheckBitBoard(S_BOARD *pos);
 extern void ShowSqAttackedBySide(const int side, const S_BOARD *pos);
+extern void PrintBin(int move);
 
 // attack.c
 extern int SqAttacked (const int sq, const int side, const S_BOARD *pos);

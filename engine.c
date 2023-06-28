@@ -12,17 +12,24 @@ int main (void) {
     AllInit();
 
     // empty playBoard
-    S_BOARD playBoard[1];
+    S_BOARD board[1];
 
-    ParseFen(FENATTACK, playBoard);    
-    // ASSERT(CheckBoard(playBoard));
-    PrintBoard(playBoard);
+    ParseFen(FEN4, board);    
+    PrintBoard(board);
+    ASSERT(CheckBoard(board));
 
-    ShowSqAttackedBySide(WHITE, playBoard);
+    int move = 0; 
+    int from = 6;
+    int to = 12; 
+    int captured = wR;
+    int promoted = bR;
 
-    ShowSqAttackedBySide(BLACK, playBoard);
+    move = ( from ) | ( to << 7  ) | ( captured << 14 ) | ( promoted << 20 ) ;
 
+    printf("Decimal: %d Hex: %X\n", move, move);
+    PrintBin(move);
 
-    
+    printf("From: %d To: %d Captured: %d Promoted: %d Is Pawn Start: %s",
+    FROMSQ(move), TOSQ(move), CAPTURED(move), PROMOTED(move), (move & MFLAGPS) ? "yes" : "no");
     return 0;
 }

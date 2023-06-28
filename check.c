@@ -32,3 +32,15 @@ void ShowSqAttackedBySide(const int side, const S_BOARD *pos) {
     }
     printf("\n\n");
 }
+
+// simple function to print move int as binary number 
+void PrintBin(int move) {
+    int index = 0;
+    printf("As Binary: \n");
+    for (index = 27; index >= 0; index-- ) {
+        if ( (1 << index) & move) printf("1");
+        else printf("0");
+        if (index != 28 && index % 4 == 0 ) printf(" ");
+    }
+    printf("\n");
+}
