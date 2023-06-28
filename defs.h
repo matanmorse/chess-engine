@@ -56,6 +56,12 @@ enum { FALSE, TRUE };
 // convert to 4 bit number showing castling permission
 enum { WKCA = 1, WQCA = 2, BKCA = 4, BQCA = 8 }; 
 
+
+typedef struct {
+    int move; // stores information for move
+    int score;
+} S_MOVE;
+
 typedef struct {
     int move; // current move
     int castlePerm; // castling permission before move was played
@@ -91,6 +97,18 @@ typedef struct {
     int pList[13][10]; // piece list
 } S_BOARD;
 #endif
+
+/* GAME MOVE */
+/* 
+32 Bits
+0000 0000 0000 0000 0000 0111 1111 --> From Square = 7 bits
+0000 0000 0000 0011 1111 1000 0000 --> To Square
+0000 0000 0011 1100 0000 0000 0000 --> Captured Piece
+0000 0000 0100 0000 0000 0000 0000 --> En Passant Capture?
+0000 0000 1000 0000 0000 0000 0000 --> En Passant Capture?
+0000 1111 0000 0000 0000 0000 0000 --> Promoted Piece
+1111 0000 0000 0000 0000 0000 0000 --> Castling?
+*/
 
 /* MACROS */
 #define FR2SQ(f, r) ( (21 + (f) ) + ( r * 10 ) ) // macro to convert from rank and file to 120 board sq number
