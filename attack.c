@@ -10,8 +10,13 @@ const int KiDir[8] = { -1, -10, 1, 10, -9, -11, 11, 9 }; // squares king can att
 // inst side is ATTACKING side not attacked side.
 // to check if a square is being attacked by a given side in a given position
 int SqAttacked (const int sq, const int side, const S_BOARD *pos) {
- 
+    
     int pce, index, t_sq, dir;
+
+    ASSERT (SqOnBoard(sq));
+    ASSERT (SideValid(side));
+    ASSERT(CheckBoard(pos));
+    
     // check if pawns are attacking
     if ( side == WHITE ) {
         // for white, pawns can only attack a square -9 or -11 squares away so we check if there is a white pawn there
