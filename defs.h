@@ -218,4 +218,4 @@ extern int PieceValidEmpty(const int pce);
 extern int PieceValid(const int pce);
 
 // movegen.c
-extern void GenerateWhitePawnMove(const S_BOARD *pos, S_MOVELIST *list, int sq);
+extern void GenerateWhitePawnMoves(const S_BOARD *pos, S_MOVELIST *list, int sq);
