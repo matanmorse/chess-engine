@@ -13,17 +13,14 @@ int main (void) {
 
     // empty playBoard
     S_BOARD board[1];
+    S_MOVELIST list[1];
+    int move = MOVE(A2, G6, wR, wN, 0 );
+    PrMove(move);
 
-    int move = 0; 
-    int from = A2;
-    int to = H7; 
-    int captured = wR;
-    int promoted = bB;
+    ParseFen(FEN1, board);
+    PrintBoard(board);
 
-    move = ( from ) | ( to << 7  ) | ( captured << 14 ) | ( promoted << 20 ) | MFLAGPS ;
 
-    
-    printf("From: %s\n", PrSq(FROMSQ(move)));
-    printf("Algebraic: %s\n", PrMove(move));
+    GenerateWhitePawnMove(board, list, E4);
     return 0;
 }

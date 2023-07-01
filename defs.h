@@ -67,6 +67,7 @@ typedef struct {
     S_MOVE moves[MAXPOSITIONMOVES];
     int count; // count of moves on movelist
 } S_MOVELIST;   
+
 typedef struct {
     int move; // current move
     int castlePerm; // castling permission before move was played
@@ -147,6 +148,8 @@ typedef struct {
 #define IsKi(p) (PieceKing[(p)]) // macro shortening PieceKing[] array
 #define IsKn(p) (PieceKnight[(p)]) // macro shortening PieceKnight[] array
 
+#define MOVE(from, to, captured, promoted, flag) ( (from) | (to << 7) |  ((captured) << 14) | ( (promoted) << 20) | flag ) // generate a move int
+
 /* GLOBALS */
 extern int Sq120ToSq64[BRD_SQ_NUM]; // array which converts 120 square board numbers to 64 board numbers
 extern int Sq64ToSq120[64]; // array which converts 64 sq board numbers to 64 sq board numbers
@@ -213,3 +216,6 @@ extern int SideValid(const int side);
 extern int FileRankValid(const int fr);
 extern int PieceValidEmpty(const int pce);
 extern int PieceValid(const int pce);
+
+// movegen.c
+extern void GenerateWhitePawnMove(const S_BOARD *pos, S_MOVELIST *list, int sq);
