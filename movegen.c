@@ -63,7 +63,7 @@ void GenerateSlidingMoves(const S_BOARD *pos, int sq, S_MOVELIST *list) {
 
     // get piece on square
     int pce = pos -> pieces[sq];
-    ASSERT(IsBQ(pce) || IsRQ(pce) && ( PieceCol[pce] == pos -> side)); // sanity check
+    ASSERT( ( IsBQ(pce) || IsRQ(pce) ) && ( PieceCol[pce] == pos -> side)); // sanity check
 
     // loop in each direction
     for ( int dir = 0; dir < NumDir[pce]; dir++ ) { // NumDir just contains the number of directions, so we can easily loop over each direction
@@ -87,6 +87,28 @@ void GenerateSlidingMoves(const S_BOARD *pos, int sq, S_MOVELIST *list) {
         }
     }
 }      
+
+void GenerateNonSlidingMoves(const S_BOARD *pos, int sq, S_MOVELIST *list) {
+    int pce = pos -> pieces[sq]; // get piece on square
+    printf("Piece :%c \n", PceChar[pce]);
+    ASSERT(IsKn(pce) || IsKi(pce));
+
+    for ( int dir = 0; dir < NumDir[pce]; dir++ ) {
+        int t_sq = sq + PceDir[pce][dir]; // get our target square based on the direction the piece moves in
+        int t_pce = pos -> pieces[t_sq]; // get piece on taret square
+        
+        if (!SqOnBoard(t_sq)) continue;
+
+        if ( t_pce == EMPTY ) { // if the square is empty we can move normally
+            printf("        Normal on %s\n", PrSq(t_sq));
+            AddQuietMove(pos, MOVE(sq, t_sq, EMPTY, EMPTY, 0), list);
+        }
+        else if ( PieceCol[t_pce] != pos -> side ) { // if the piece is an enemy piece we can capture it
+            printf("        Capture on %s\n", PrSq(t_sq));
+            AddCaptureMove(pos, MOVE(sq, t_sq, t_pce, EMPTY, 0), list);
+        }
+    }
+}   
 
 void GenerateKnightMoves(const S_BOARD *pos, int sq, S_MOVELIST *list) {
     ASSERT(IsKn(pos -> pieces[sq]) && ( PieceCol[pos -> pieces[sq]] == pos -> side) ); // sanity check
@@ -343,14 +365,8 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
         
         // loop over all pieces of that type
         for ( pceNum = 0; pceNum < pos -> pceNum[pce]; pceNum++) {
-            if (IsKn(pce)) {
-                int sq = pos -> pList[pce][pceNum]; // get the square of our current piece
-                GenerateKnightMoves(pos, sq, list); // generate the moves
-            }
-            if (IsKi(pce)) {
-                int sq = pos -> pList[pce][pceNum]; // get the square of our current piece
-                GenerateKingMoves(pos, sq, list);
-            }
+            int sq = pos -> pList[pce][pceNum];
+            GenerateNonSlidingMoves(pos, sq, list);
         }
 
         // move on to next non-slider piece
