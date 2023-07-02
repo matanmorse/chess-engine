@@ -7,7 +7,7 @@
 #define FEN2 "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2"
 #define FEN3 "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"
 #define FEN4 "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
-#define FENTEST "p5pk/8/8/3q4/2P1P3/8/8/7K b KQkq - 0 1"
+#define FENTEST "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 #define ROOKS "6k1/8/5r2/8/1nR5/5N2/8/6K1 w - - 0 1"
 #define QUEENS "6k1/8/4nq2/8/1nQ5/5N2/1N6/6K1 b - - 0 1"
 #define KNIGHTSKINGS "5k2/1n6/4n3/6N1/8/3N4/8/5K2 b KQkq - 0 1"
@@ -26,7 +26,7 @@ int main (void) {
     S_MOVELIST list[1];
   
 
-    ParseFen(KNIGHTSKINGS, board);
+    ParseFen(FENTEST, board);
     PrintBoard(board);
 
     GenerateAllMoves(board, list);

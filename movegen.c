@@ -59,7 +59,6 @@ void AddEnPasMove (const S_BOARD *pos, int move, S_MOVELIST *list ) {
 }
 
 void GenerateSlidingMoves(const S_BOARD *pos, int sq, S_MOVELIST *list) {
-    printf("Moves for %c on %s\n", PceChar[pos -> pieces[sq]], PrSq(sq));
 
     // get piece on square
     int pce = pos -> pieces[sq];
@@ -73,11 +72,9 @@ void GenerateSlidingMoves(const S_BOARD *pos, int sq, S_MOVELIST *list) {
             int t_pce = pos -> pieces[t_sq];
             ASSERT(SqOnBoard(t_sq)); 
             if ( t_pce == EMPTY ) { // if the square is empty we can move there normally
-                printf("        Normal on %s\n", PrSq(t_sq));
                 AddQuietMove(pos, MOVE(sq, t_sq, EMPTY, EMPTY, 0), list);
             }
             else if ( PieceCol[t_pce] != pos -> side) { // if the piece is an enemy piece we can capture it
-                printf("        Capture on %s\n", PrSq(t_sq));
                 AddCaptureMove(pos, MOVE(sq, t_sq, t_pce, EMPTY, 0), list);
                 break; // if we hit a piece stop searching in this direction
             }
@@ -90,7 +87,6 @@ void GenerateSlidingMoves(const S_BOARD *pos, int sq, S_MOVELIST *list) {
 
 void GenerateNonSlidingMoves(const S_BOARD *pos, int sq, S_MOVELIST *list) {
     int pce = pos -> pieces[sq]; // get piece on square
-    printf("Piece :%c \n", PceChar[pce]);
     ASSERT(IsKn(pce) || IsKi(pce));
 
     for ( int dir = 0; dir < NumDir[pce]; dir++ ) {
@@ -100,11 +96,9 @@ void GenerateNonSlidingMoves(const S_BOARD *pos, int sq, S_MOVELIST *list) {
         if (!SqOnBoard(t_sq)) continue;
 
         if ( t_pce == EMPTY ) { // if the square is empty we can move normally
-            printf("        Normal on %s\n", PrSq(t_sq));
             AddQuietMove(pos, MOVE(sq, t_sq, EMPTY, EMPTY, 0), list);
         }
         else if ( PieceCol[t_pce] != pos -> side ) { // if the piece is an enemy piece we can capture it
-            printf("        Capture on %s\n", PrSq(t_sq));
             AddCaptureMove(pos, MOVE(sq, t_sq, t_pce, EMPTY, 0), list);
         }
     }
@@ -157,7 +151,7 @@ void GenerateWhitePawnMoves(const S_BOARD *pos, S_MOVELIST *list, int sq) {
     // generate double moves if on correct rank
     if ( RanksBrd[sq] == RANK_2 ) { // can do double move
         targ_sq = sq + 20; // look two ranks ahead
-        if ( SQEMPTY(targ_sq, pos) ) {
+        if ( SQEMPTY(targ_sq, pos) && SQEMPTY(sq + 10, pos) ) {
             move = MOVE (sq, targ_sq, EMPTY, EMPTY, MFLAGPS);
             AddQuietMove(pos, move, list);
         }
@@ -236,7 +230,7 @@ void GenerateBlackPawnMoves(const S_BOARD *pos, S_MOVELIST *list, int sq) {
     // generate double moves if on correct rank
     if ( RanksBrd[sq] == RANK_7 ) { // can do double move
         targ_sq = sq - 20; // look two ranks ahead
-        if ( SQEMPTY(targ_sq, pos) ) {
+        if ( SQEMPTY(targ_sq, pos) && SQEMPTY(sq - 10, pos) ) {
             move = MOVE (sq, targ_sq, EMPTY, EMPTY, MFLAGPS);
             AddQuietMove(pos, move, list);
         }
@@ -295,16 +289,21 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
         
         // generate castling moves
         if ( pos -> castlePerm & WKCA) { // if white has castle permission
+        printf("White side king castling permission \n");
             if ( pos -> pieces[F1] == EMPTY && pos -> pieces[G1] == EMPTY ) { // if f1 and g1 are empty
+            printf("g1 f1 empty \n");
                 if (!SqAttacked(E1, BLACK, pos) && !SqAttacked(F1, BLACK, pos)) { // and neither of the squares are attacked and king is not in check
-                    printf("WCKA Movegen\n"); // we can generate the move
+                    printf("Squares not attacked \n");
+                    printf("Generating castling move \n");
+                    AddQuietMove(pos, MOVE(E1, G1, EMPTY, EMPTY, MFLAGCA), list);
                 }
             }
         }
         if ( pos -> castlePerm & WQCA) { // if white has castle permission
             if ( pos -> pieces[D1] == EMPTY && pos -> pieces[C1] == EMPTY && pos -> pieces[B1] == EMPTY ) { // if b1/c1/d1 are empty
                 if (!SqAttacked(E1, BLACK, pos) && !SqAttacked(D1, BLACK, pos)) { // and none of the squares are attacked and king is not in check
-                    printf("WQKA Movegen\n"); // we can generate the move
+                    printf("Generating castling move \n");                
+                    AddQuietMove(pos, MOVE(E1, C1, EMPTY, EMPTY, MFLAGCA), list);
                 }
             }
         }
@@ -320,14 +319,16 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
         if ( pos -> castlePerm & BKCA) { // if black has castle permission
             if ( pos -> pieces[F8] == EMPTY && pos -> pieces[G8] == EMPTY ) { // if squares are empty
                 if (!SqAttacked(E8, WHITE, pos) && !SqAttacked(F8, WHITE, pos)) { // and neither of the squares are attacked and king is not in check
-                    printf("BCKA Movegen\n"); // we can generate the move
+                    printf("Generating castling move \n");            
+                    AddQuietMove(pos, MOVE(E8, G8, EMPTY, EMPTY, MFLAGCA), list);
                 }
             }
         }
         if ( pos -> castlePerm & BQCA) { // if white has castle permission
             if ( pos -> pieces[D8] == EMPTY && pos -> pieces[C8] == EMPTY && pos -> pieces[B8] == EMPTY ) { // if squares are empty
                 if (!SqAttacked(E8, WHITE, pos) && !SqAttacked(D8, WHITE, pos)) { // and none of the squares are attacked and king is not in check
-                    printf("BQKA Movegen\n"); // we can generate the move
+                    printf("Generating castling move \n");          
+                    AddQuietMove(pos, MOVE(E8, C8, EMPTY, EMPTY, MFLAGCA), list);
                 }
             }
         }
