@@ -40,19 +40,19 @@ const int LoopNonSlidePce[6] = {
 const int LoopSlideIndex[2] = { 0, 4 };  // where to start in LoopSlidePce based on side
 const int LoopNonSlideIndex[2] = { 0, 3 };
 
-void AddQuietMove (const S_BOARD *pos, int move, S_MOVELIST *list ) {
+static void AddQuietMove (const S_BOARD *pos, int move, S_MOVELIST *list ) {
     list -> moves[list -> count].move = move;
     list -> moves[list -> count].score = 0;
     list -> count++;
 }
 
-void AddCaptureMove (const S_BOARD *pos, int move, S_MOVELIST *list ) {
+static void AddCaptureMove (const S_BOARD *pos, int move, S_MOVELIST *list ) {
     list -> moves[list -> count].move = move;
     list -> moves[list -> count].score = 0;
     list -> count++;
 }
 
-void AddEnPasMove (const S_BOARD *pos, int move, S_MOVELIST *list ) {
+static void AddEnPasMove (const S_BOARD *pos, int move, S_MOVELIST *list ) {
     list -> moves[list -> count].move = move;
     list -> moves[list -> count].score = 0;
     list -> count++;
@@ -115,10 +115,10 @@ void GenerateWhitePawnCapMove(const S_BOARD *pos, S_MOVELIST *list, int sq, int 
 
     // check for promotion moves
     if ( RanksBrd[sq] == RANK_7 ) { // this move is a promotion
-        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, wN, 0), list); // add capture moves for each piece type
-        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, wR, 0), list); // add capture moves for each piece type
-        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, wB, 0), list); // add capture moves for each piece type
-        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, wQ, 0), list); // add capture moves for each piece type
+        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, wN, MFLAGPROM), list); // add capture moves for each piece type
+        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, wR, MFLAGPROM), list); // add capture moves for each piece type
+        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, wB, MFLAGPROM), list); // add capture moves for each piece type
+        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, wQ, MFLAGPROM), list); // add capture moves for each piece type
     } else {
         // otherwise, just add normal capture move
         AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, EMPTY, 0), list);
@@ -137,10 +137,10 @@ void GenerateWhitePawnMoves(const S_BOARD *pos, S_MOVELIST *list, int sq) {
     if ( pos -> pieces[sq + 10] == EMPTY && SqOnBoard(sq)) { // if the square is free
         // check for promotion
         if ( RanksBrd[sq] == RANK_7 ) {
-            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wN, 0), list); // add each type of promotion
-            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wR, 0), list);
-            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wB, 0), list);
-            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wQ, 0), list);
+            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wN, MFLAGPROM), list); // add each type of promotion
+            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wR, MFLAGPROM), list);
+            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wB, MFLAGPROM), list);
+            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wQ, MFLAGPROM), list);
 
         } else { // make normal forward move
             move = MOVE(sq, targ_sq, EMPTY, EMPTY, 0 );
@@ -195,10 +195,10 @@ void GenerateBlackPawnCapMove(const S_BOARD *pos, S_MOVELIST *list, int sq, int 
 
     // check for promotion moves
     if ( RanksBrd[sq] == RANK_2 ) { // this move is a promotion
-        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, bN, 0), list); // add capture moves for each piece type
-        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, bR, 0), list); // add capture moves for each piece type
-        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, bB, 0), list); // add capture moves for each piece type
-        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, bQ, 0), list); // add capture moves for each piece type
+        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, bN, MFLAGPROM), list); // add capture moves for each piece type
+        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, bR, MFLAGPROM), list); // add capture moves for each piece type
+        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, bB, MFLAGPROM), list); // add capture moves for each piece type
+        AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, bQ, MFLAGPROM), list); // add capture moves for each piece type
     } else {
         // otherwise, just add normal capture move
         AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, EMPTY, 0), list);
@@ -216,10 +216,10 @@ void GenerateBlackPawnMoves(const S_BOARD *pos, S_MOVELIST *list, int sq) {
     if ( pos -> pieces[sq - 10] == EMPTY && SqOnBoard(sq)) { // if the square is free
         // check for promotion
         if ( RanksBrd[sq] == RANK_2 ) {
-            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wN, 0), list); // add each type of promotion
-            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wR, 0), list);
-            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wB, 0), list);
-            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wQ, 0), list);
+            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wN, MFLAGPROM), list); // add each type of promotion
+            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wR, MFLAGPROM), list);
+            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wB, MFLAGPROM), list);
+            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, wQ, MFLAGPROM), list);
 
         } else { // make normal forward move
             move = MOVE(sq, targ_sq, EMPTY, EMPTY, 0 );

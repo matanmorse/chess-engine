@@ -260,14 +260,15 @@ void ResetBoard( S_BOARD *pos ) {
         pos -> pieces[SQ120(index)] = EMPTY;
     } 
     // set all piece counts for white, black, and both to zero
-    for ( index = 0; index < 3; index++ ){
+    for ( index = 0; index < 2; index++ ){
         pos -> bigPce[index] = 0;
         pos -> majPce[index] = 0;
         pos -> minPce[index] = 0;
         pos -> material[index] = 0;
+    }
+    for ( index = 0; index < 3; index++ ) {
         pos -> pawns[index] = 0ULL; // pawns must be set to U64 type bc bitboards
     }
-
     for ( index = 0; index < 13; index++ ) {
         pos -> pceNum[index] = 0;
     }
