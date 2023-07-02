@@ -19,10 +19,10 @@ int main (void) {
     S_MOVELIST list[1];
   
 
-    ParseFen(PAWNMOVESB, board);
+    ParseFen(PAWNMOVESW, board);
     PrintBoard(board);
 
     GenerateAllMoves(board, list);
-    PrintMoveList(list);
+    // PrintMoveList(list);
     return 0;
 }

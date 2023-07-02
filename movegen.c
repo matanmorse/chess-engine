@@ -6,6 +6,19 @@
 #define SQOFFBOARD(sq) (FilesBrd[sq] == OFFBOARD) // check if a square is offboard
 #define SQEMPTY(sq, pos) ( (pos -> pieces[sq]) == EMPTY)
 
+// if side is white we start at wB and go til 0, black starts at bB, just helps
+// loop through sliding pieces based on side more easily
+const int LoopSlidePce[8] = {
+    wB, wR, wQ, 0, bB, bR, bQ, 0
+}; // array to help us loop through sliding pieces
+
+const int LoopNonSlidePce[6] = {
+ wN, wK, 0, bN, bK, 0
+};
+
+const int LoopSlideIndex[2] = { 0, 4 };  // where to start in LoopSlidePce based on side
+const int LoopNonSlideIndex[2] = { 0, 3 };
+
 void AddQuietMove (const S_BOARD *pos, int move, S_MOVELIST *list ) {
     list -> moves[list -> count].move = move;
     list -> moves[list -> count].score = 0;
@@ -33,6 +46,11 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
     int side = pos -> side;
     int sq = 0; int t_sq = 0;
     int pceNum = 0;
+    int dir = 0;
+    int index = 0;
+    int pceIndex = 0;
+
+    printf("\n\nSide: %c\n", SideChar[side]);
 
     if ( side == WHITE) {
         for ( pceNum = 0; pceNum < pos -> pceNum[wP]; pceNum++ ) { // loop over white pawns
@@ -48,12 +66,37 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
                 GenerateBlackPawnMoves(pos, list, sq); // generate the moves for this piece
             }
     }
+    /* Loop for Slide Pieces */
+    pceIndex = LoopSlideIndex[side]; // we start on the appropriate piece for the side
+    pce = LoopSlidePce[pceIndex++]; // POST-Increment, so pceindex only gets incremented after we get the correct piece
+
+    while ( pce != 0 )
+    {
+        ASSERT(PieceValid(pce));
+        printf("sliders pceIndex: %d pce:%c\n", pceIndex, PceChar[pce]);
+
+        pce = LoopSlidePce[pceIndex++];
+    }
     
+    /* Loop for non slide */
+    pceIndex = LoopNonSlideIndex[side];
+    pce = LoopNonSlidePce[pceIndex++];
+
+    while ( pce != 0 ) {
+        ASSERT(PieceValid(pce));
+        printf("Non Sliders pceIndex: %d pce: %c\n", pceIndex, PceChar[pce]);
+
+        pce = LoopNonSlidePce[pceIndex++];
+    }
 }
 
 void GenerateWhitePawnCapMove(const S_BOARD *pos, S_MOVELIST *list, int sq, int targ_sq) {
     int t_pce;
     t_pce = pos -> pieces[targ_sq]; // get piece on target square
+    ASSERT(PieceValidEmpty(t_pce));
+    ASSERT(SqOnBoard(sq));
+    ASSERT(SqOnBoard(targ_sq));
+
     // check for promotion moves
     if ( RanksBrd[sq] == RANK_7 ) { // this move is a promotion
         AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, wN, 0), list); // add capture moves for each piece type
@@ -130,6 +173,10 @@ void GenerateWhitePawnMoves(const S_BOARD *pos, S_MOVELIST *list, int sq) {
 void GenerateBlackPawnCapMove(const S_BOARD *pos, S_MOVELIST *list, int sq, int targ_sq) {
     int t_pce;
     t_pce = pos -> pieces[targ_sq]; // get piece on target square
+    ASSERT(PieceValidEmpty(t_pce));
+    ASSERT(SqOnBoard(sq));
+    ASSERT(SqOnBoard(targ_sq));
+
     // check for promotion moves
     if ( RanksBrd[sq] == RANK_2 ) { // this move is a promotion
         AddCaptureMove(pos, MOVE(sq, targ_sq, t_pce, bN, 0), list); // add capture moves for each piece type

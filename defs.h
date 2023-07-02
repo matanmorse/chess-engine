@@ -178,6 +178,8 @@ extern int PieceKing[13]; // is piece a king
 extern int PieceRookQueen[13]; // is piece rook or queen
 extern int PieceBishopQueen[13]; // is piece bishop or queen
 
+extern int PieceSlides[13];
+
 /* FUNCTIONS */ 
 // init.c
 extern void AllInit(); // initializes sq-conversion arrays
