@@ -90,3 +90,40 @@ The next four bits are used to store the piece a pawn may have promoted to, if t
 
 `1111 0000 0000 0000 0000 0000 0000`
 The last four bits are used to store information about castling permission as booleans-- I.e. white king castle, white queen castle, black king castle, black queen castle.
+
+## Move Generation
+Move generation is a very important part of the engine. `movegen.c` contains all the neccesary functions to generate all moves in a given position. `moves.c` generates moves "psudeo-legally", meaning that pieces obey their normal rules of movement but moves are not checked first to see if they leave the king in check.
+
+### Helper Functions
+
+#### AddQuietMove(), AddCaptureMove(), AddEnPasMove()
+These functions are called to add a given move to to the `S_MOVELIST` struct based on what type of move it is. It takes the given move, appends it to the given MOVELIST struct, then increments the count.
+
+#### Pawn generation moves
+Because of the special rules for pawns, pawn moves are generated in 2 seperate functions. The first function generates "quiet" moves, these have logic in them to check if a pawn is allowed to perform a 2-square pawn start, and include generation for all types of promotions. GeneratePawnCaptureMove() fulfills all the requirements for captures, including promotions and en passants. These moves are then added to the move list.
+
+#### PceDir and PceNum
+`PceDir` and `PceNum` are two arrays which contain information about how the pieces in chess move. `PceDir` is a two-dimensional array, where the first array is indexed by piece, and the second array describes the directions in which that piece can normally move. For example, a white knight has an index of `3`, so PceDir[3] is an array of the 8 directions a knight can move, by the operation which must be done on the 120-square board to get to that square.
+
+![](refs/board_64_board_120.PNG)
+
+For example, the first item in the second array is the integer value `-8`. This is because subtracting 8 from any square is a valid knight move. This is repeated with numbers like `-19`, `19`, and so on for all the appropriate directions.
+
+`PceNum` is a simpler array which is similarly indexed by pieces, but just contains the number of directions that piece has in the `PceDir` array. For example, a bishop has an index of 4 and can move in 4 directions (each diagonal), so `PceNum[4]` is 4. This is useful because we can iterate over the `PceDir` array the appropriate amount of times.
+
+#### GenerateNonSlidingMoves()
+This function is quite simple. It takes as an argument a square which a non-sliding piece occupies. Based on the type of piece (King or Knight), it will go through and generate all the possible moves using the `NumDir` and `PceNum` arrays. It also checks for captures.
+
+#### GenerateSlidingMoves()
+This function works quite similarly to `GenerateNonSlidingMoves`, except it contains a `while` loop which continues to add moves in a certain direction until it is blocked by a hostile piece (in which case it can capture), a friendly piece, or moves offboard. It works very similarly to the `SqAttacked()` function.
+
+### GenerateAllMoves()
+The `GenerateAllMoves()` function is called on a board to generate all moves for a side (black or white). First, it uses the pceNum array in the `pos` struct, which contains the number of each kind of piece. In this way it can iterate over all pieces of a certain type like so: 
+
+```c
+        for ( pceNum = 0; pceNum < pos -> pceNum[wP]; pceNum++ ) { // loop over white pawns
+                sq = pos -> pList[wP][pceNum]; // get the square the pawn is on
+
+            }
+```
+This loop iterates over all white pawns. It can then get the square that piece is on using the `pList` array, and then call the `GenerateWhitePawnMoves()` function for each pawn. It does a similar thing with the sliding and non-sliding pieces, using a couple of helper arrays to avoid repeating code.
