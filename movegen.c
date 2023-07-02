@@ -6,6 +6,27 @@
 #define SQOFFBOARD(sq) (FilesBrd[sq] == OFFBOARD) // check if a square is offboard
 #define SQEMPTY(sq, pos) ( (pos -> pieces[sq]) == EMPTY)
 
+
+const int PceDir[13][8] = {
+	{ 0, 0, 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0 },
+	{ -8, -19,	-21, -12, 8, 19, 21, 12 },
+	{ -9, -11, 11, 9, 0, 0, 0, 0 },
+	{ -1, -10,	1, 10, 0, 0, 0, 0 },
+	{ -1, -10,	1, 10, -9, -11, 11, 9 },
+	{ -1, -10,	1, 10, -9, -11, 11, 9 },
+	{ 0, 0, 0, 0, 0, 0, 0 },
+	{ -8, -19,	-21, -12, 8, 19, 21, 12 },
+	{ -9, -11, 11, 9, 0, 0, 0, 0 },
+	{ -1, -10,	1, 10, 0, 0, 0, 0 },
+	{ -1, -10,	1, 10, -9, -11, 11, 9 },
+	{ -1, -10,	1, 10, -9, -11, 11, 9 }
+}; // values of directions pieces can move in
+
+const int NumDir[13] = {
+ 0, 0, 8, 4, 4, 8, 8, 0, 8, 4, 4, 8, 8
+}; // number of directions a piece has
+
 // if side is white we start at wB and go til 0, black starts at bB, just helps
 // loop through sliding pieces based on side more easily
 const int LoopSlidePce[8] = {
@@ -37,6 +58,35 @@ void AddEnPasMove (const S_BOARD *pos, int move, S_MOVELIST *list ) {
     list -> count++;
 }
 
+void GenerateSlidingMoves(const S_BOARD *pos, int sq, S_MOVELIST *list) {
+    printf("Moves for %c on %s\n", PceChar[pos -> pieces[sq]], PrSq(sq));
+
+    // get piece on square
+    int pce = pos -> pieces[sq];
+    ASSERT(IsBQ(pce) || IsRQ(pce) && ( PieceCol[pce] == pos -> side)); // sanity check
+
+    // loop in each direction
+    for ( int dir = 0; dir < NumDir[pce]; dir++ ) { // NumDir just contains the number of directions, so we can easily loop over each direction
+        int t_sq = sq + PceDir[pce][dir]; // PceDir contains the list of directions a piece can move based on its type
+
+        while (SqOnBoard(t_sq)) { // keep going in a direction until we hit the end of the board
+            int t_pce = pos -> pieces[t_sq];
+            ASSERT(SqOnBoard(t_sq)); 
+            if ( t_pce == EMPTY ) { // if the square is empty we can move there normally
+                printf("        Normal on %s\n", PrSq(t_sq));
+                AddQuietMove(pos, MOVE(sq, t_sq, EMPTY, EMPTY, 0), list);
+            }
+            else if ( PieceCol[t_pce] != pos -> side) { // if the piece is an enemy piece we can capture it
+                printf("        Capture on %s\n", PrSq(t_sq));
+                AddCaptureMove(pos, MOVE(sq, t_sq, t_pce, EMPTY, 0), list);
+                break; // if we hit a piece stop searching in this direction
+            }
+            else break; // if the space is occupied and not capturable stop searching in that direction
+
+            t_sq += PceDir[pce][dir];
+        }
+    }
+}      
 
 void GenerateKnightMoves(const S_BOARD *pos, int sq, S_MOVELIST *list) {
     ASSERT(IsKn(pos -> pieces[sq]) && ( PieceCol[pos -> pieces[sq]] == pos -> side) ); // sanity check
@@ -274,6 +324,12 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
     while ( pce != 0 )
     {
         ASSERT(PieceValid(pce));
+
+        // loop over all pieces of that type
+        for ( pceNum = 0; pceNum < pos -> pceNum[pce]; pceNum++) {
+            int sq = pos -> pList[pce][pceNum];
+            GenerateSlidingMoves(pos, sq, list);
+        }
 
         pce = LoopSlidePce[pceIndex++];
     }
