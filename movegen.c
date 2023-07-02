@@ -37,59 +37,48 @@ void AddEnPasMove (const S_BOARD *pos, int move, S_MOVELIST *list ) {
     list -> count++;
 }
 
-void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
-    ASSERT ( CheckBoard (pos) );
 
-    list -> count = 0;
+void GenerateKnightMoves(const S_BOARD *pos, int sq, S_MOVELIST *list) {
+    ASSERT(IsKn(pos -> pieces[sq]) && ( PieceCol[pos -> pieces[sq]] == pos -> side) ); // sanity check
+    // loop over every move the knight could make
 
-    int pce = EMPTY;
-    int side = pos -> side;
-    int sq = 0; int t_sq = 0;
-    int pceNum = 0;
-    int dir = 0;
-    int index = 0;
-    int pceIndex = 0;
-
-    printf("\n\nSide: %c\n", SideChar[side]);
-
-    if ( side == WHITE) {
-        for ( pceNum = 0; pceNum < pos -> pceNum[wP]; pceNum++ ) { // loop over white pawns
-                sq = pos -> pList[wP][pceNum]; // get the square the pawn is on
-                ASSERT(SqOnBoard(sq)); // check square is on board
-                GenerateWhitePawnMoves(pos, list, sq); // generate the moves for this piece
-            }
-    }
-    else {
-        for ( pceNum = 0; pceNum < pos -> pceNum[bP]; pceNum++ ) { // loop over black pawns
-                sq = pos -> pList[bP][pceNum]; // get the square the pawn is on
-                ASSERT(SqOnBoard(sq)); // check square is on board
-                GenerateBlackPawnMoves(pos, list, sq); // generate the moves for this piece
-            }
-    }
-    /* Loop for Slide Pieces */
-    pceIndex = LoopSlideIndex[side]; // we start on the appropriate piece for the side
-    pce = LoopSlidePce[pceIndex++]; // POST-Increment, so pceindex only gets incremented after we get the correct piece
-
-    while ( pce != 0 )
-    {
-        ASSERT(PieceValid(pce));
-        printf("sliders pceIndex: %d pce:%c\n", pceIndex, PceChar[pce]);
-
-        pce = LoopSlidePce[pceIndex++];
-    }
-    
-    /* Loop for non slide */
-    pceIndex = LoopNonSlideIndex[side];
-    pce = LoopNonSlidePce[pceIndex++];
-
-    while ( pce != 0 ) {
-        ASSERT(PieceValid(pce));
-        printf("Non Sliders pceIndex: %d pce: %c\n", pceIndex, PceChar[pce]);
-
-        pce = LoopNonSlidePce[pceIndex++];
+    printf("Moves for %c on %s\n", PceChar[pos -> pieces[sq]], PrSq(sq));
+    for ( int dir = 0; dir < 8; dir++ ) {
+        int targ_sq = sq + KnDir[dir];
+        if ( SqOnBoard(targ_sq) && SQEMPTY(targ_sq, pos) ) {// if the square is on the board and unoccupied we can move there
+            printf("        Normal on %s\n", PrSq(targ_sq));
+            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, EMPTY, 0), list);
+        } 
+        else if ( SqOnBoard(targ_sq) && ( PieceCol[pos -> pieces[targ_sq]] != pos -> side)) { // otherwise is the piece on that square is an enemy we can capture it
+            int cap_pce = pos -> pieces[targ_sq];
+            printf("        Capture on %s\n", PrSq(targ_sq));
+            AddCaptureMove(pos, MOVE(sq, targ_sq, cap_pce, EMPTY, 0), list);
+        }
     }
 }
 
+void GenerateKingMoves(const S_BOARD *pos, int sq, S_MOVELIST *list) {
+    ASSERT(IsKi(pos -> pieces[sq]) && ( PieceCol[pos -> pieces[sq]] == pos -> side) ); // sanity check
+    printf("Moves for %c on %s\n", PceChar[pos -> pieces[sq]], PrSq(sq));
+
+    // loop over every move the knight could make
+    for ( int dir = 0; dir < 8; dir++ ) {
+        int targ_sq = sq + KiDir[dir];
+
+        if ( SqOnBoard(targ_sq) && SQEMPTY(targ_sq, pos) ) {// if the square is on the board and unoccupied we can move there
+            printf("        Normal on %s\n", PrSq(targ_sq));
+            AddQuietMove(pos, MOVE(sq, targ_sq, EMPTY, EMPTY, 0), list);
+        } 
+        else if ( SqOnBoard(targ_sq) && ( PieceCol[pos -> pieces[targ_sq]] != pos -> side)) { // otherwise is the piece on that square is an enemy we can capture it
+            int cap_pce = pos -> pieces[targ_sq];
+            printf("        Capture on %s\n", PrSq(targ_sq));
+            AddCaptureMove(pos, MOVE(sq, targ_sq, cap_pce, EMPTY, 0), list);
+        }
+    }
+
+}
+
+// dumb silly pawn stuff
 void GenerateWhitePawnCapMove(const S_BOARD *pos, S_MOVELIST *list, int sq, int targ_sq) {
     int t_pce;
     t_pce = pos -> pieces[targ_sq]; // get piece on target square
@@ -247,4 +236,68 @@ void GenerateBlackPawnMoves(const S_BOARD *pos, S_MOVELIST *list, int sq) {
         AddEnPasMove(pos, move, list);
     }
     
+}
+
+void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
+    ASSERT ( CheckBoard (pos) );
+
+    list -> count = 0;
+
+    int pce = EMPTY;
+    int side = pos -> side;
+    int sq = 0; int t_sq = 0;
+    int pceNum = 0;
+    int dir = 0;
+    int index = 0;
+    int pceIndex = 0;
+
+    printf("\n\nSide: %c\n", SideChar[side]);
+
+    if ( side == WHITE) {
+        for ( pceNum = 0; pceNum < pos -> pceNum[wP]; pceNum++ ) { // loop over white pawns
+                sq = pos -> pList[wP][pceNum]; // get the square the pawn is on
+                ASSERT(SqOnBoard(sq)); // check square is on board
+                GenerateWhitePawnMoves(pos, list, sq); // generate the moves for this piece
+            }
+    }
+    else {
+        for ( pceNum = 0; pceNum < pos -> pceNum[bP]; pceNum++ ) { // loop over black pawns
+                sq = pos -> pList[bP][pceNum]; // get the square the pawn is on
+                ASSERT(SqOnBoard(sq)); // check square is on board
+                GenerateBlackPawnMoves(pos, list, sq); // generate the moves for this piece
+            }
+    }
+    /* Loop for Slide Pieces */
+    pceIndex = LoopSlideIndex[side]; // we start on the appropriate piece for the side
+    pce = LoopSlidePce[pceIndex++]; // POST-Increment, so pceindex only gets incremented after we get the correct piece
+
+    while ( pce != 0 )
+    {
+        ASSERT(PieceValid(pce));
+
+        pce = LoopSlidePce[pceIndex++];
+    }
+    
+    /* Loop for non slide */
+    pceIndex = LoopNonSlideIndex[side];
+    pce = LoopNonSlidePce[pceIndex++];
+
+    while ( pce != 0 ) {
+        ASSERT(PieceValid(pce));
+        
+        // loop over all pieces of that type
+        for ( pceNum = 0; pceNum < pos -> pceNum[pce]; pceNum++) {
+            if (IsKn(pce)) {
+                int sq = pos -> pList[pce][pceNum]; // get the square of our current piece
+                GenerateKnightMoves(pos, sq, list); // generate the moves
+            }
+            if (IsKi(pce)) {
+                int sq = pos -> pList[pce][pceNum]; // get the square of our current piece
+                GenerateKingMoves(pos, sq, list);
+            }
+        }
+
+        // move on to next non-slider piece
+        pce = LoopNonSlidePce[pceIndex++];
+    }
 }

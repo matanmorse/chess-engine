@@ -179,6 +179,10 @@ extern int PieceRookQueen[13]; // is piece rook or queen
 extern int PieceBishopQueen[13]; // is piece bishop or queen
 
 extern int PieceSlides[13];
+extern const int KnDir[8]; 
+extern const int RkDir[4]; 
+extern const int BiDir[4];
+extern const int KiDir[8];
 
 /* FUNCTIONS */ 
 // init.c
