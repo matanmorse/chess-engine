@@ -74,7 +74,7 @@ void GenerateWhitePawnMoves(const S_BOARD *pos, S_MOVELIST *list, int sq) {
     if ( RanksBrd[sq] == RANK_2 ) { // can do double move
         targ_sq = sq + 20; // look two ranks ahead
         if ( SQEMPTY(targ_sq, pos) ) {
-            move = MOVE (sq, targ_sq, EMPTY, EMPTY, 0);
+            move = MOVE (sq, targ_sq, EMPTY, EMPTY, MFLAGPS);
             AddQuietMove(pos, move, list);
         }
     }
@@ -86,12 +86,22 @@ void GenerateWhitePawnMoves(const S_BOARD *pos, S_MOVELIST *list, int sq) {
              GenerateWhitePawnCapMove(pos, list, sq, targ_sq);
         }
     }
+    else if ( pos -> enPas == targ_sq && ( RanksBrd[sq] == RANK_5)) { // if the target square is en passant and correct rank we can en passant capture
+        int capturedPce = pos -> pieces[targ_sq - 10]; // the en passant piece is just a rank ahead
+        move = MOVE(sq, targ_sq, capturedPce, EMPTY, MFLAGEP); 
+        AddEnPasMove(pos, move, list);
+    }
 
     targ_sq = sq + 9; 
     if ( !SQOFFBOARD(targ_sq) && ( pos -> pieces[targ_sq] != EMPTY) ) { // valid capture square
         if ( PieceCol[ pos -> pieces[targ_sq]] == BLACK) { // if piece is enemy piece
              GenerateWhitePawnCapMove(pos, list, sq, targ_sq);
         }
+    }
+    else if ( pos -> enPas == targ_sq && ( RanksBrd[sq] == RANK_5)) { // if the target square is en passant and correct rank we can en passant capture
+        int capturedPce = pos -> pieces[targ_sq - 10]; // the en passant piece is just a rank ahead
+        move = MOVE(sq, targ_sq, capturedPce, EMPTY, MFLAGEP); 
+        AddEnPasMove(pos, move, list);
     }
     
 }
