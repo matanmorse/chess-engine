@@ -100,7 +100,7 @@ void GenerateWhitePawnMoves(const S_BOARD *pos, S_MOVELIST *list, int sq) {
 
     // generate capture moves
     targ_sq = sq + 11; 
-    if ( SqOnBoard(sq) && ( pos -> pieces[targ_sq] != EMPTY) ) { // valid capture square
+    if ( SqOnBoard(targ_sq) && ( pos -> pieces[targ_sq] != EMPTY) ) { // valid capture square
         if ( PieceCol[ pos -> pieces[targ_sq]] == BLACK) { // if piece is enemy piece
              GenerateWhitePawnCapMove(pos, list, sq, targ_sq);
         }
@@ -113,7 +113,7 @@ void GenerateWhitePawnMoves(const S_BOARD *pos, S_MOVELIST *list, int sq) {
     }
 
     targ_sq = sq + 9; 
-    if ( SqOnBoard(sq) && ( pos -> pieces[targ_sq] != EMPTY) ) { // valid capture square
+    if ( SqOnBoard(targ_sq) && ( pos -> pieces[targ_sq] != EMPTY) ) { // valid capture square
         if ( PieceCol[ pos -> pieces[targ_sq]] == BLACK) { // if piece is enemy piece
              GenerateWhitePawnCapMove(pos, list, sq, targ_sq);
         }
@@ -175,7 +175,7 @@ void GenerateBlackPawnMoves(const S_BOARD *pos, S_MOVELIST *list, int sq) {
 
     // generate capture moves
     targ_sq = sq - 11; 
-    if ( SqOnBoard(sq) && ( pos -> pieces[targ_sq] != EMPTY) ) { // valid capture square
+    if ( SqOnBoard(targ_sq) && ( pos -> pieces[targ_sq] != EMPTY) ) { // valid capture square
         if ( PieceCol[ pos -> pieces[targ_sq]] == WHITE) { // if piece is enemy piece
              GenerateBlackPawnCapMove(pos, list, sq, targ_sq);
         }
@@ -188,7 +188,7 @@ void GenerateBlackPawnMoves(const S_BOARD *pos, S_MOVELIST *list, int sq) {
     }
 
     targ_sq = sq - 9; 
-    if ( SqOnBoard(sq) && ( pos -> pieces[targ_sq] != EMPTY) ) { // valid capture square
+    if ( SqOnBoard(targ_sq) && ( pos -> pieces[targ_sq] != EMPTY) ) { // valid capture square
         if ( PieceCol[ pos -> pieces[targ_sq]] == WHITE) { // if piece is enemy piece
              GenerateBlackPawnCapMove(pos, list, sq, targ_sq);
         }
