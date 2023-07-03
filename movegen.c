@@ -277,9 +277,7 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
     int dir = 0;
     int index = 0;
     int pceIndex = 0;
-
-    printf("\n\nSide: %c\n", SideChar[side]);
-
+    
     if ( side == WHITE) {
         for ( pceNum = 0; pceNum < pos -> pceNum[wP]; pceNum++ ) { // loop over white pawns
                 sq = pos -> pList[wP][pceNum]; // get the square the pawn is on
