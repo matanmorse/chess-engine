@@ -229,4 +229,3 @@ extern void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list);
 extern void GenerateBlackPawnMoves(const S_BOARD *pos, S_MOVELIST *list, int sq);
 
 // makemove.c
-extern void ClearPce(S_BOARD *pos, const int sq);

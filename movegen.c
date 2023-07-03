@@ -287,11 +287,9 @@ void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list) {
         
         // generate castling moves
         if ( pos -> castlePerm & WKCA) { // if white has castle permission
-        printf("White side king castling permission \n");
             if ( pos -> pieces[F1] == EMPTY && pos -> pieces[G1] == EMPTY ) { // if f1 and g1 are empty
             printf("g1 f1 empty \n");
                 if (!SqAttacked(E1, BLACK, pos) && !SqAttacked(F1, BLACK, pos)) { // and neither of the squares are attacked and king is not in check
-                    printf("Squares not attacked \n");
                     printf("Generating castling move \n");
                     AddQuietMove(pos, MOVE(E1, G1, EMPTY, EMPTY, MFLAGCA), list);
                 }
